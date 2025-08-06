@@ -1,0 +1,56 @@
+name: gluetun
+services:
+  gluetun:
+    cap_add:
+      - NET_ADMIN
+    cpu_shares: 10
+    command: []
+    container_name: gluetun
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - FIREWALL_VPN_INPUT_PORTS=31531,31532
+      - SERVER_CITIES=Auckland
+      - SERVER_NAME=Tianguan
+      - TZ=NewZealand/Auckland
+      - UPDATER_PERIOD=24h
+      - VPN_SERVICE_PROVIDER=airvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_ADDRESSES=10.163.120.44/32
+      - WIREGUARD_PRESHARED_KEY=XEirBqS/dDGOcc3aj4dbl/19Jii1ddyTxm98K7Gk5hU=
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+    hostname: gluetun
+    image: qmcgaw/gluetun:latest
+    ports:
+      - target: 2234
+        published: "2234"
+        protocol: ""
+      - target: 8080
+        published: "8080"
+        protocol: ""
+      - target: 6565
+        published: "6565"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: /DATA/AppData/Gluetun
+        target: /DATA/AppData/Gluetun
+    network_mode: bridge
+    privileged: false
+x-casaos:
+  author: self
+  category: self
+  hostname: ""
+  icon: ""
+  index: /
+  is_uncontrolled: false
+  port_map: ""
+  scheme: http
+  store_app_id: poetic_rocco
+  title:
+    custom: gluetun

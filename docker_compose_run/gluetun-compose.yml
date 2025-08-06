@@ -1,0 +1,31 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - FIREWALL_VPN_INPUT_PORTS=10125,20238,57873 # qBittorrent web UI, Nicotine+ web UI (VNC), Nicotine+ file transfers (optional)
+      - VPN_SERVICE_PROVIDER=airvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=XEirBqS/dDGOcc3aj4dbl/19Jii1ddyTxm98K7Gk5hU=
+      - WIREGUARD_ADDRESSES=10.163.120.44/32
+      - SERVER_COUNTRY=NewZealand
+      - SERVER_CITY=Auckland
+      - NET_LOCAL=192.168.20.50
+    ports:
+      - 8080:8080    # qBittorrent web UI
+      - 6881:6881    # qBittorrent torrent port
+      - 6565:6565    # Nicotine+ web UI (VNC)
+      - 2234:2234    # Nicotine+ file transfers (optional)
+      - 10125:10125 
+      - 20238:20238 
+      - 57873:57873
+    volumes:
+      - type: bind
+        source: /DATA/AppData/gluetun
+        target: /DATA/AppData/gluetun 
+    restart: unless-stopped

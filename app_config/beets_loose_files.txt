@@ -1,0 +1,28 @@
+# To organise a directory containing loose files into a folder like: $artist/$album/$track $title use the following:
+
+# Use this beets/config.yaml:
+
+"""
+directory: /output_dir (e.g., /mnt/media_1tb/music/DEEMIX/beets-inbox)
+library: ~/.config/beets/library.db  # location of config isn't import ??
+
+import:
+  move: yes              # Move files instead of copying
+  copy: no
+  write: no              # Don't write tags to the files
+  autotag: no            # Don't query MusicBrainz or change metadata
+  singletons: yes        # Handle standalone tracks
+  group_albums: yes      # Group tracks by album tag
+  quiet_fallback: skip   # Skip problematic imports without prompting
+  resume: ask            # Ask to resume partial imports
+
+paths:
+  default: $artist/$album/$track $title    
+  comp: Compilations/$album/$track $title
+  singleton: $artist/$album/$track $title
+
+plugins: []
+"""
+
+# Then run beets with:
+beet import $input_folder (e.g., /mnt/media_1tb/music/DEEMIX)

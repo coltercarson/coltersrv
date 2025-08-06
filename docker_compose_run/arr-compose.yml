@@ -1,0 +1,277 @@
+# Compose file for the *arr stack. Configuration files are stored in the
+# directory you launch the compose file on. Change to bind mounts if needed.
+# All containers are ran with user and group ids of the main user and
+# group to aviod permissions issues of downloaded files, please refer
+# the read me file for more information.
+
+#############################################################################
+# NOTICE: We recently switched to using a .env file. PLEASE refer to the docs.
+# https://github.com/TechHutTV/homelab/tree/main/media#docker-compose-and-env
+#############################################################################
+
+# networks:
+#   servarrnetwork:
+#     name: servarrnetwork
+#     ipam:
+#       config:
+#         - subnet: 172.39.0.0/24
+
+services:
+  # airvpn recommended (referral url: https://airvpn.org/?referred_by=673908)
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun # If running on an LXC see readme for more info.
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.2
+    # ports:
+    #   - 20238:20238 # airvpn forwarded port, pulled from .env
+    #   - 8080:8080 # qbittorrent web interface
+    #   - 6881:6881 # qbittorrent torrent port
+    #   - 6789:6789 # nzbget
+    #   - 9696:9696 # prowlarr
+    #   - 6565:6565 # nicotine+ web interface
+    #   - 2234:2234 # nicotine+ file transfers (optional)
+    volumes:
+      - ./gluetun:/gluetun
+    # Make a '.env' file in the same directory.
+    env_file:
+      - .env
+    # healthcheck:
+    #   test: ping -c 1 www.google.com || exit 1
+    #   interval: 20s
+    #   timeout: 10s
+    #   retries: 5
+    restart: unless-stopped
+
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    labels:
+      - deunhealth.restart.on.unhealthy=true
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - WEBUI_PORT=8080 # must match "qbittorrent web interface" port number in gluetun's service above
+      - TORRENTING_PORT=${FIREWALL_VPN_INPUT_PORTS} # airvpn forwarded port, pulled from .env
+    volumes:
+      - ./qbittorrent:/config
+      - /DATA:/data
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    network_mode: service:gluetun
+    healthcheck:
+      test: ping -c 1 www.google.com || exit 1
+      interval: 60s
+      retries: 3
+      start_period: 20s
+      timeout: 10s
+
+  # See the 'qBittorrent Stalls with VPN Timeout' section for more information.
+  deunhealth:
+    image: qmcgaw/deunhealth
+    container_name: deunhealth
+    network_mode: "none"
+    environment:
+      - LOG_LEVEL=info
+      - HEALTH_SERVER_ADDRESS=127.0.0.1:9999
+      - TZ=${TZ}
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  nzbget:
+    image: lscr.io/linuxserver/nzbget:latest
+    container_name: nzbget
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./nzbget:/config
+      - /DATA:/data
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    restart: unless-stopped
+    network_mode: service:gluetun
+
+  prowlarr:
+    image: lscr.io/linuxserver/prowlarr:latest
+    container_name: prowlarr
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./prowlarr:/config
+    restart: unless-stopped
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    network_mode: service:gluetun
+
+  sonarr:
+    image: lscr.io/linuxserver/sonarr:latest
+    container_name: sonarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./sonarr:/config
+      - /DATA:/data
+    ports:
+      - 8989:8989
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.3
+
+  radarr:
+    image: lscr.io/linuxserver/radarr:latest
+    container_name: radarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./radarr:/config
+      - /DATA:/data
+    ports:
+      - 7878:7878
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.4
+
+  lidarr:
+    container_name: lidarr
+    image: lscr.io/linuxserver/lidarr:latest
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./lidarr:/config
+      - /DATA:/data
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    ports:
+      - 8686:8686
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.5
+
+  bazarr:
+    image: lscr.io/linuxserver/bazarr:latest
+    container_name: bazarr
+    restart: unless-stopped
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - ./bazarr:/config
+      - /DATA:/data
+    ports:
+      - 6767:6767
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.6
+
+  ytdl-sub:
+    image: ghcr.io/jmbannon/ytdl-sub:latest
+    container_name: ytdl-sub
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+      - DOCKER_MODS=linuxserver/mods:universal-cron
+    volumes:
+      - ./ytdl-sub:/config
+      - /DATA/youtube:/youtube
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.8
+    restart: unless-stopped
+
+  jellyseerr:
+    container_name: jellyseerr
+    image: fallenbagel/jellyseerr:latest
+    environment:
+      - PUID=${PUID}
+      - PGID=${PGID}
+      - TZ=${TZ}
+    volumes:
+      - ./jellyseerr:/app/config
+    ports:
+      - 5055:5055
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.9
+    restart: unless-stopped
+  
+  nicotineplus-proper:
+    container_name: nicotine
+    image: sirjmann92/nicotineplus-proper:latest
+    # TODO: check network_mode vs networks
+    network_mode: service:gluetun
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    # networks:
+    #   servarrnetwork:
+    #     ipv4_address: 172.39.0.10
+    # ports:
+      # - 6565:6565   # web access
+      # - 2234:2234   # direct vnc port
+    environment: # All environment variables are optional, use as needed, defaults are listed (TZ, LANG, and UMASK have no default)
+     - TZ=Pacific/Auckland
+     - LANG=C.UTF-8
+     - UMASK=022
+     - DARKMODE=True
+     - LOGIN=colter5000
+     - PASSW=${PASSW}
+     - PUID=1000
+     - PGID=1000
+     - UPNP=False 
+     - AUTO_CONNECT=True
+     - TRAY_ICON=True
+     - NOTIFY_FILE=True
+     - NOTIFY_FOLDER=True
+     - NOTIFY_TITLE=True
+     - NOTIFY_PM=True
+     - NOTIFY_CHATROOM=True
+     - NOTIFY_MENTION=True
+  #  - WEB_UI_PORT=6565 # for custom webUI port assignment. Should match 'port' env variable or VPN webUI port
+    volumes:
+      - ./nicotine/appdata:/data/nicotine  # For all application data (runtime files, and downloads, logs, etc)
+      - ./config:/data/config     # For configuration files
+      # Mount an external volume with the contents to share (recommended readonly)
+      - /DATA/music/public:/share:ro
+      # (optionally) take out the useful directories from the data folder into a better place
+      #   ...these are the default directories, maped 1 by 1:
+      # - /your/home/nicotine/complete:/data/nicotine/downloads
+      # - /your/home/nicotine/incomplete:/data/nicotine/incomplete
+      # - /your/home/nicotine/uploads:/data/nicotine/received
+      # - /your/home/nicotine/logs:/data/nicotine/logs
+      # or just mount a single external volume and change those directories in preferences to be inside that mount point:
+      - /DATA/downloads/nicotine:/folders
+    restart: unless-stopped

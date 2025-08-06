@@ -1,0 +1,98 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - FIREWALL_VPN_INPUT_PORTS=10125,20238,57873 # qBittorrent web UI, Nicotine+ web UI (VNC), Nicotine+ file transfers (optional)
+      - VPN_SERVICE_PROVIDER=airvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=XEirBqS/dDGOcc3aj4dbl/19Jii1ddyTxm98K7Gk5hU=
+      - WIREGUARD_ADDRESSES=10.163.120.44/32
+      - SERVER_COUNTRIES=New Zealand
+      - SERVER_CITIES=Auckland
+      - NET_LOCAL=192.168.20.50
+    ports:
+      - 8080:8080    # qBittorrent web UI
+      - 6881:6881    # qBittorrent torrent port
+      - 6565:6565    # Nicotine+ web UI (VNC)
+      - 2234:2234    # Nicotine+ file transfers (optional)
+      - 10125:10125  # qBittorrent torrenting port (airvpn)
+      - 20238:20238  
+      - 57873:57873
+    volumes:
+      - type: bind
+        source: /DATA/AppData/gluetun
+        target: /gluetun
+    restart: unless-stopped
+  
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    restart: unless-stopped
+    network_mode: service:gluetun
+    labels:
+      icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/qBittorrent/icon.png
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=10125
+    volumes:
+      - /DATA/AppData/qbittorrent/config:/config
+      - /DATA:/data
+      - /media/devmon/COLTER_FILMS/MOVIES:/movies
+      - /media/devmon/COLTER_FILMS/TV SERIES:/tv_series
+
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+  
+  nicotineplus-proper:
+    image: sirjmann92/nicotineplus-proper:latest
+    container_name: nicotine
+    network_mode: service:gluetun
+    environment: # All environment variables are optional, use as needed, defaults are listed (TZ, LANG, and UMASK have no default)
+     - TZ=Pacific/Auckland
+     - LANG=C.UTF-8
+     - UMASK=022
+     - DARKMODE=True
+     - LOGIN=colter5000
+     - PASSW=${PASSW}
+     - PUID=1000
+     - PGID=1000
+     - UPNP=False 
+     - AUTO_CONNECT=True
+     - TRAY_ICON=True
+     - NOTIFY_FILE=True
+     - NOTIFY_FOLDER=True
+     - NOTIFY_TITLE=True
+     - NOTIFY_PM=True
+     - NOTIFY_CHATROOM=True
+     - NOTIFY_MENTION=True
+     - WEB_UI_PORT=6565 # for custom webUI port assignment. Should match 'port' env variable or VPN webUI port
+    volumes:
+      # - /DATA/AppData/nicotine:/data/nicotine  # For all application data (runtime files, and downloads, logs, etc)
+      - /DATA/AppData/nicotine/config:/data/config     # For configuration files
+      - /DATA/music/public:/share:ro # Mount an external volume with the contents to share (recommended readonly)
+      # (optionally) take out the useful directories from the data folder into a better place
+      #   ...these are the default directories, maped 1 by 1:
+      - /DATA/downloads/nicotine/complete:/data/nicotine/downloads
+      - /DATA/downloads/nicotine/incomplete:/data/nicotine/incomplete
+      - /DATA/downloads/nicotine/uploads:/data/nicotine/received
+      - /DATA/downloads/nicotine/logs:/data/nicotine/logs
+      # - /media/devmon/COLTER_FILMS/Music/nicotine/complete:/data/nicotine/downloads
+      # - /media/devmon/COLTER_FILMS/Music/nicotine/incomplete:/data/nicotine/incomplete
+      # or just mount a single external volume and change those directories in preferences to be inside that mount point:
+      # - /DATA/downloads/nicotine:/folders
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    restart: unless-stopped

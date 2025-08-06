@@ -1,0 +1,46 @@
+# from: https://github.com/sirjmann92/nicotineplus-proper
+
+services:
+  nicotineplus-proper:
+    image: sirjmann92/nicotineplus-proper:latest
+    container_name: nicotine
+    # network_mode: service:gluetun
+    ports:
+      - 6565:6565   # web access
+      - 2234:2234   # direct vnc port
+    environment: # All environment variables are optional, use as needed, defaults are listed (TZ, LANG, and UMASK have no default)
+     - TZ=Pacific/Auckland
+     - LANG=C.UTF-8
+     - UMASK=022
+     - DARKMODE=True
+     - LOGIN=colter5000
+     - PASSW=${PASSW}
+     - PUID=1000
+     - PGID=1000
+     - UPNP=False 
+     - AUTO_CONNECT=True
+     - TRAY_ICON=True
+     - NOTIFY_FILE=True
+     - NOTIFY_FOLDER=True
+     - NOTIFY_TITLE=True
+     - NOTIFY_PM=True
+     - NOTIFY_CHATROOM=True
+     - NOTIFY_MENTION=True
+  #  - WEB_UI_PORT=6565 # for custom webUI port assignment. Should match 'port' env variable or VPN webUI port
+    volumes:
+      - /DATA/AppData/nicotine:/data/nicotine  # For all application data (runtime files, and downloads, logs, etc)
+      - /DATA/AppData/nicotine/config:/data/config     # For configuration files
+      # Mount an external volume with the contents to share (recommended readonly)
+      - /DATA/music/public:/share:ro
+      # (optionally) take out the useful directories from the data folder into a better place
+      #   ...these are the default directories, maped 1 by 1:
+      - /DATA/downloads/nicotine/complete:/data/nicotine/downloads
+      - /DATA/downloads/nicotine/incomplete:/data/nicotine/incomplete
+      - /DATA/downloads/nicotine/uploads:/data/nicotine/received
+      - /DATA/downloads/nicotine/uploads:/data/nicotine/logs
+      # or just mount a single external volume and change those directories in preferences to be inside that mount point:
+      # - /DATA/downloads/nicotine:/folders
+    restart: unless-stopped
+
+# run with:
+# sudo docker compose -f nicotineplus-compose.yml up -d

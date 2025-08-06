@@ -1,0 +1,23 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:latest
+    container_name: jellyfin
+    user: "1000:1000"
+    network_mode: 'host'
+    volumes:
+      - ./config:/config
+      - ./cache:/cache
+      - type: bind
+        source: "/media/devmon/COLTER T5/Contents"
+        target: /music
+      - type: bind
+        source: /media/devmon/COLTER_FILMS/MOVIES
+        target: /movies
+      - type: bind
+        source: "/media/devmon/COLTER_FILMS/TV SERIES"
+        target: /tv_servies
+    restart: unless-stopped
+    environment:
+      - JELLYFIN_PublishedServerUrl=http://colter5000.co.nz
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'

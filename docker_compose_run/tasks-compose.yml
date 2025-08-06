@@ -1,0 +1,15 @@
+version: "3"
+services:
+  tasks.md:
+    image: baldissaramatheus/tasks.md
+    container_name: tasks-md
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - PORT=8079
+    volumes:
+      - /DATA/AppData/tasks_md/tasks:/tasks
+      - /DATA/AppData/tasks_md/config:/config
+    restart: unless-stopped
+    ports:
+      - 8079:8079

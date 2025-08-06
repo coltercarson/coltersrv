@@ -1,0 +1,38 @@
+---
+services:
+  qbittorrent:
+    image: lscr.io/linuxserver/qbittorrent:latest
+    container_name: qbittorrent-novpn
+    labels:
+      icon: https://cdn.jsdelivr.net/gh/IceWhaleTech/CasaOS-AppStore@main/Apps/qBittorrent/icon.png
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=6881
+    network_mode: "conatiner:gluetun"
+    volumes:
+      - type: bind
+        source: /DATA/AppData/qbittorrent/config
+        target: /config
+      - type: bind
+        source: /mnt/SSDDATA_sdc2/DATA/Downloads/torrents
+        target: /downloads
+      - type: bind
+        source: /mnt/SSDDATA_sdc2/DATA/Media/Movies
+        target: /movies
+      - type: bind
+        source: /mnt/SSDDATA_sdc2/DATA/Media/TV Shows
+        target: /tvshows
+      - type: bind
+        source: /mnt/RAID1/Media/TV Shows
+        target: /HDDTV
+      - type: bind
+        source: /mnt/RAID1/Media/Movies
+        target: /HDDMOVIES
+    ports:
+      - 8080:8080
+      - 6881:6881
+      - 6881:6881/udp
+    restart: unless-stopped

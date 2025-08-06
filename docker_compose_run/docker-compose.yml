@@ -1,0 +1,88 @@
+services:
+  gluetun:
+    image: qmcgaw/gluetun:latest
+    container_name: gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    environment:
+      - VPN_SERVICE_PROVIDER=airvpn
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_PRESHARED_KEY=XEirBqS/dDGOcc3aj4dbl/19Jii1ddyTxm98K7Gk5hU=
+      - WIREGUARD_ADDRESSES=10.163.120.44/32
+      - SERVER_NAMES=Theemin
+    ports:
+      - 10125:10125  # airvpn forwarded port
+      - 8080:8080   # qBittorrent web UI
+      - 6565:6565   # Nicotine+ web UI (VNC)
+      - 2234:2234   # Nicotine+ file transfers (optional)
+    restart: unless-stopped
+
+  qbittorrent:
+    image: linuxserver/qbittorrent:latest
+    container_name: qbittorrent
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Pacific/Auckland
+      - WEBUI_PORT=8080
+      - TORRENTING_PORT=10125 # airvpn forwarded port
+    volumes:
+      - ./qbittorrent:/config
+      - /DATA:/data
+    depends_on:
+      gluetun:
+        condition: service_healthy
+        restart: true
+    network_mode: service:gluetun
+    restart: unless-stopped
+    healthcheck:
+      test: ping -c 1 www.google.com || exit 1
+      interval: 60s
+      retries: 3
+      start_period: 20s
+      timeout: 10s
+
+  nicotineplus-proper:
+    image: sirjmann92/nicotineplus-proper:latest
+    container_name: nicotine
+    network_mode: service:gluetun
+    # ports:
+    #   - 6565:6565   # web access
+    #   - 2234:2234   # direct vnc port
+    environment: # All environment variables are optional, use as needed, defaults are listed (TZ, LANG, and UMASK have no default)
+     - TZ=Pacific/Auckland
+     - LANG=C.UTF-8
+     - UMASK=022
+     - DARKMODE=True
+     - LOGIN=colter5000
+     - PASSW=${PASSW}
+     - PUID=1000
+     - PGID=1000
+     - UPNP=False 
+     - AUTO_CONNECT=True
+     - TRAY_ICON=True
+     - NOTIFY_FILE=True
+     - NOTIFY_FOLDER=True
+     - NOTIFY_TITLE=True
+     - NOTIFY_PM=True
+     - NOTIFY_CHATROOM=True
+     - NOTIFY_MENTION=True
+  #  - WEB_UI_PORT=6565 # for custom webUI port assignment. Should match 'port' env variable or VPN webUI port
+    volumes:
+      - ./nicotine/appdata:/data/nicotine  # For all application data (runtime files, and downloads, logs, etc)
+      - ./config:/data/config     # For configuration files
+      # Mount an external volume with the contents to share (recommended readonly)
+      - /DATA/music/public:/share:ro
+      # (optionally) take out the useful directories from the data folder into a better place
+      #   ...these are the default directories, maped 1 by 1:
+      # - /your/home/nicotine/complete:/data/nicotine/downloads
+      # - /your/home/nicotine/incomplete:/data/nicotine/incomplete
+      # - /your/home/nicotine/uploads:/data/nicotine/received
+      # - /your/home/nicotine/logs:/data/nicotine/logs
+      # or just mount a single external volume and change those directories in preferences to be inside that mount point:
+      - /DATA/downloads/nicotine:/folders
+    restart: unless-stopped
+

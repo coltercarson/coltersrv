@@ -1,0 +1,23 @@
+# example docker-compose.yml
+
+version: "2.4"
+services:
+  gonic:
+    image: sentriz/gonic:latest
+    environment:
+      - TZ:Pacific/Auckland
+      # optionally, see more available env vars in the readme
+    ports:
+      - 4747:80
+    volumes:
+      - /DATA/AppData/gonic:/data # gonic db etc
+      - /mnt/media_1tb/music:/music:ro # your music
+      - ./podcasts:/podcasts # your podcasts
+      - /mnt/media_1tb/music/playlists:/playlists # your playlists
+      - /DATA/AppData/gonic/cache:/cache # transcode / covers / etc cache dir
+
+    # # set the following two sections if you've enabled jukebox
+    # group_add:
+    #   - audio
+    # devices:
+    #   - /dev/snd:/dev/snd
