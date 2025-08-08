@@ -1,0 +1,14 @@
+services:
+  minidlna:
+    image: vladgh/minidlna
+    container_name: minidlna
+    ports:
+      - "8200:8200"      # HTTP status page
+      - "1900:1900/udp"  # SSDP discovery
+    environment:
+      - MINIDLNA_MEDIA_DIR=A,/music
+      - MINIDLNA_FRIENDLY_NAME=coltersrv
+      - MINIDLNA_INOTIFY=yes
+    volumes:
+      - /mnt/media_1tb/music:/music   # writable, so Foobar edits tags directly
+    restart: unless-stopped
