@@ -6,7 +6,8 @@ sudo docker run -d \
  --name portainer \
  --restart=always \
  -v /var/run/docker.sock:/var/run/docker.sock \
- -v /home/colter5000/docker/portainer:/data \
+ -v portainer_data:/data \
  portainer/portainer-ce:lts
+
 
  # access portainer at https://192.168.20.50:9443
