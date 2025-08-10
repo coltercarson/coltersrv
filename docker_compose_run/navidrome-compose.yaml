@@ -9,5 +9,5 @@ services:
     #   # Optional: put your config options customization here. Examples:
     #   # ND_LOGLEVEL: debug
     volumes:
-      - "/DATA/AppData/navidrome:/data"
-      - "/media/devmon/COLTER_T7/DJ MUSIC:/music:ro"
+      - /DATA/AppData/navidrome:/data
+      - /mnt/media/music:/music
