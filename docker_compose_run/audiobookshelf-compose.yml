@@ -1,0 +1,15 @@
+services:
+  audiobookshelf:
+    image: ghcr.io/advplyr/audiobookshelf:latest
+    container_name: audiobookshelf
+    environment:
+      - TZ=Pacific/Auckland
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /DATA/AppData/audiobookshelf:/config
+      - /mnt/media/audiobooks:/audiobooks
+      - /mnt/media/podcasts:/podcasts
+    ports:
+      - 13378:80
+    restart: unless-stopped
