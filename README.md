@@ -27,10 +27,10 @@ Alternatively, you can use the visitor account:
 
 ### 📚 Audiobooks  
 - **Web:** [https://coltersrv.ghoul-elnath.ts.net:8443/](https://coltersrv.ghoul-elnath.ts.net:8443/)  
-- **iOS Apps:** ShelfPlayer, Plappa  
+- **iOS Apps:** ShelfPlayer ($4.99), [Plappa](https://plappa.me/) (paid for downloads)
 - **Android App:** Audiobookshelf  
 
-_Contact me if you want anything added 🙂_
+_Let me know if you want anything added 🙂_
 
 ---
 
@@ -734,6 +734,7 @@ cd /DATA/AppData && nano .env && nano docker-compose.yml
 
 docker compose --env-file .env up -d
 ```
+
 
 
 
