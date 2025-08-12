@@ -4,14 +4,14 @@ services:
         container_name: beets-flask
         restart: unless-stopped
         ports:
-            - "5001:5001"
+            - 5001:5001
         environment:
-            # 502 is default on macos, 1000 on linux
             TZ: Auckland/Pacific
             USER_ID: 1000
             GROUP_ID: 1000
         volumes:
             - /DATA/AppData/beets/config/:/config
-            # for music folders, match paths inside and out of container!
-            - /mnt/media_1tb/music/soulseek/beets-inbox/:/soulseek/inbox/
-            - /mnt/media_1tb/music/soulseek/beets-clean/:/soulseek/clean/
+            - /mnt/media/music/soulseek/beets-inbox/:/soulseek/inbox/
+            - /mnt/media/music/soulseek/beets-clean/:/soulseek/clean/
+            - /mnt/media/music/telegram_bot/beets-clean:/telegram_bot/beets-clean
+
