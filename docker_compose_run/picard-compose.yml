@@ -4,7 +4,8 @@ services:
     image: mikenye/picard:latest
     container_name: picard
     ports:
-      - "5800:5800"
+      - 5800:5800
     volumes:
-      - "/DATA/AppData/picard/config:/config:rw"
-      - "/mnt/media_1tb:/storage:rw"
+      - /DATA/AppData/picard/config:/config:rw
+      - /mnt/media:/storage:rw
+
