@@ -20,7 +20,7 @@ Alternatively, you can use the visitor account:
 
 ### 🎵 Music  
 - **Web:** [https://coltersrv.ghoul-elnath.ts.net:10000/](https://coltersrv.ghoul-elnath.ts.net:10000/)  
-- **iOS Apps:** Amperfy (many others available — search *"Navidrome"*)  
+- **iOS Apps:** [Amperfy](https://apps.apple.com/us/app/amperfy-music/id1530145038) (many others available — search *"Navidrome"*)  
 - **Android Apps:** Symfonium (paid, highly recommended), Tempo?  
 
 ---
@@ -734,6 +734,7 @@ cd /DATA/AppData && nano .env && nano docker-compose.yml
 
 docker compose --env-file .env up -d
 ```
+
 
 
 
