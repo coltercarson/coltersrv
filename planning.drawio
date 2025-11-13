@@ -1,0 +1,31 @@
+<mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:145.0) Gecko/20100101 Firefox/145.0" version="28.2.9">
+  <diagram name="Page-1" id="HrOp2bbkeIw1gzts0znk">
+    <mxGraphModel dx="1042" dy="631" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="1654" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="dAuLop-INfGSxdXE4qi7-1" value="coltersrv" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="20" y="10" width="90" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-2" value="jazzfromhell.org" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" vertex="1" parent="1">
+          <mxGeometry x="400" y="80" width="140" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-3" value="/user-registration" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="160" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-4" value="/ig-music-tile" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="220" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-5" value="/music" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="340" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-6" value="/jfh-view" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" vertex="1" parent="1">
+          <mxGeometry x="440" y="280" width="120" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="dAuLop-INfGSxdXE4qi7-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Server user registration&lt;/h1&gt;&lt;p&gt;Simple interface where external users can register an account to be used for services hosted on coltersrv (e.g., navidrome, jellyfin, audiobookshelf)&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;fillColor=default;gradientColor=none;strokeColor=default;spacingTop=10;spacingLeft=10;spacingRight=10;arcSize=7;" vertex="1" parent="1">
+          <mxGeometry x="710" y="110" width="290" height="360" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
