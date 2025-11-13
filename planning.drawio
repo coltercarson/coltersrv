@@ -22,8 +22,8 @@
         <mxCell id="dAuLop-INfGSxdXE4qi7-6" value="/jfh-view" style="rounded=1;whiteSpace=wrap;html=1;fontStyle=1" parent="1" vertex="1">
           <mxGeometry x="440" y="280" width="120" height="40" as="geometry" />
         </mxCell>
-        <mxCell id="dAuLop-INfGSxdXE4qi7-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;Server user registration&lt;/h1&gt;&lt;p&gt;Simple interface where external users can register an account to be used for services hosted on coltersrv (e.g., navidrome, jellyfin, audiobookshelf)&lt;/p&gt;&lt;p&gt;Key features:&lt;/p&gt;&lt;p&gt;UI:&lt;/p&gt;&lt;p&gt;Implementation:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;fillColor=default;gradientColor=none;strokeColor=default;spacingTop=10;spacingLeft=10;spacingRight=10;arcSize=7;" parent="1" vertex="1">
-          <mxGeometry x="710" y="110" width="330" height="360" as="geometry" />
+        <mxCell id="dAuLop-INfGSxdXE4qi7-8" value="&lt;h1 style=&quot;margin-top: 0px;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;Server user registration&lt;/font&gt;&lt;/h1&gt;&lt;p&gt;Simple interface where external users can register an account to be used for services hosted on coltersrv (e.g., navidrome, jellyfin, audiobookshelf)&lt;/p&gt;&lt;p&gt;Key features:&lt;/p&gt;&lt;ul&gt;&lt;li&gt;User inputs username, password, desired services&lt;/li&gt;&lt;li&gt;Admin approval is sought (via email? or more secure option if email isn&#39;t good)&lt;/li&gt;&lt;li&gt;&lt;br&gt;&lt;/li&gt;&lt;/ul&gt;&lt;p&gt;UI:&lt;/p&gt;&lt;p&gt;Implementation:&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;" style="text;html=1;whiteSpace=wrap;overflow=hidden;rounded=1;fillColor=default;gradientColor=none;strokeColor=default;spacingTop=10;spacingLeft=10;spacingRight=10;arcSize=3;" parent="1" vertex="1">
+          <mxGeometry x="650" y="80" width="330" height="360" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
